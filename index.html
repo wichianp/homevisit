@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -676,18 +677,64 @@ function showDetail(idx) {
 function closeModal() { document.getElementById('modal-detail').classList.remove('show'); }
 document.getElementById('modal-detail').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-// ---- DELETE ----
-async function deleteRecord(idx, stdId) {
-  console.log("idx:", idx, "stdId:", stdId);
 
-  if (!confirm('ต้องการลบข้อมูลนักเรียนนี้?')) return;
+// ==============================
+// DELETE RECORD
+// ==============================
+async function deleteRecord(idx, stdId) {
+
+  // ขอรหัสยืนยันจาก Server
+  const passwordResult = await getDeletePassword();
+
+  if (passwordResult.status !== 'success') {
+    showToast('ไม่สามารถโหลดรหัสยืนยันได้', 'error');
+    return;
+  }
+
+  const correctPassword = passwordResult.password;
+
+  // Popup
+  const result = await Swal.fire({
+    title: 'ยืนยันการลบ',
+    html: `
+      <p>กรุณากรอกรหัสยืนยัน</p>
+      <input 
+        type="password"
+        id="deletePassword"
+        class="swal2-input"
+        placeholder="รหัสยืนยัน"
+      >
+    `,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'ลบข้อมูล',
+    cancelButtonText: 'ยกเลิก',
+
+    preConfirm: () => {
+
+      const password =
+        document.getElementById('deletePassword').value;
+
+      if (!password) {
+        Swal.showValidationMessage('กรุณากรอกรหัส');
+        return false;
+      }
+
+      if (password !== correctPassword) {
+        Swal.showValidationMessage('รหัสไม่ถูกต้อง');
+        return false;
+      }
+
+      return true;
+    }
+  });
+
+  if (!result.isConfirmed) return;
 
   try {
 
-    // ลบจาก Google Sheets ก่อน
     await simulateSheetsDelete(stdId);
 
-    // ถ้าสำเร็จ ค่อยลบ localStorage
     records.splice(idx, 1);
 
     localStorage.setItem(
@@ -706,10 +753,27 @@ async function deleteRecord(idx, stdId) {
       'ลบข้อมูลไม่สำเร็จ: ' + err.message,
       'error'
     );
-
   }
 }
 
+
+// ==============================
+// GET PASSWORD FROM GAS
+// ==============================
+async function getDeletePassword() {
+
+  const response = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      action: 'getDeletePassword'
+    })
+  });
+
+  return await response.json();
+}
 
 // ---- DELETE SHEETS ----
 async function simulateSheetsDelete(stdId) {
@@ -860,6 +924,19 @@ async function loadFromSheets() {
 
 loadFromSheets();
 
+// ---- SEED DATA (demo) ----
+// if (records.length === 0) {
+//   const demo = [
+//     {id:'65001',name:'สมชาย ใจดี',level:'ม.1',room:'1',phone:'0812345678',subdistrict:'ตำบลสุเทพ',district:'อำเภอเมือง',province:'เชียงใหม่',note:'บ้านสะอาด ผู้ปกครองให้ความร่วมมือดี',lat:18.796,lng:98.979,date:new Date().toLocaleDateString('th-TH'),timestamp:Date.now()-86400000*0},
+//     {id:'65002',name:'มาลี รักเรียน',level:'ม.1',room:'2',phone:'0823456789',subdistrict:'ตำบลช้างเผือก',district:'อำเภอเมือง',province:'เชียงใหม่',note:'ครอบครัวให้ความสำคัญกับการศึกษา',lat:18.806,lng:98.969,date:new Date().toLocaleDateString('th-TH'),timestamp:Date.now()-86400000*0},
+//     {id:'65003',name:'วิชัย เก่งดี',level:'ม.2',room:'1',phone:'0834567890',subdistrict:'ตำบลหายยา',district:'อำเภอเมือง',province:'เชียงใหม่',note:'',lat:18.786,lng:98.989,date:new Date(Date.now()-86400000).toLocaleDateString('th-TH'),timestamp:Date.now()-86400000*1},
+//     {id:'65004',name:'นิดา แสนดี',level:'ป.6',room:'3',phone:'0845678901',subdistrict:'ตำบลสุเทพ',district:'อำเภอเมือง',province:'เชียงใหม่',note:'',lat:18.800,lng:98.960,date:new Date(Date.now()-86400000*2).toLocaleDateString('th-TH'),timestamp:Date.now()-86400000*2},
+//     {id:'65005',name:'ประวิทย์ มีมั่น',level:'ม.3',room:'2',phone:'0856789012',subdistrict:'ตำบลช้างเผือก',district:'อำเภอเมือง',province:'เชียงใหม่',note:'',lat:18.810,lng:98.975,date:new Date(Date.now()-86400000*3).toLocaleDateString('th-TH'),timestamp:Date.now()-86400000*3},
+//   ];
+//   records = demo;
+//   localStorage.setItem('visit_records', JSON.stringify(records));
+//   updateBadge();
+// }
 </script>
 </body>
 </html>
