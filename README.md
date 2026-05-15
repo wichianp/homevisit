@@ -14,5 +14,5 @@ Execute as: Me
 Who has access: Anyone (หรือ Anyone with Google Account)
 กด Deploy → คัดลอก Web App URL
 
-6. ใส่ URL ในไฟล์ HTML
+6. ใส่ URL Web App ในไฟล์ HTML (index.html)
 แก้ const APPS_SCRIPT_URL = 'URL Web App ของคุณ';
