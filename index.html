@@ -607,6 +607,9 @@ function renderTable() {
   dataTable = $('#data-table').DataTable({
     searching: false, // ซ่อนค้นหา
     lengthChange: false, // ซ่อนแสดงรายการ
+    responsive: true,
+    autoWidth: false,
+    scrollX: true,
     language: {
       url: '',
       search: 'ค้นหา:',
