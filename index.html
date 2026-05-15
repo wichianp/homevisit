@@ -624,7 +624,7 @@ function getFiltered() {
   const room = document.getElementById('filter-room')?.value || '';
   return records.filter(r =>
     (!level || r.level === level) &&
-    (!room || r.room === room)
+    (!room || String(r.room) === room)
   );
 }
 
