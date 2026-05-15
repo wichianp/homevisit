@@ -716,13 +716,14 @@ async function deleteRecord(idx, stdId) {
 
     preConfirm: () => {
 
-      const password =
+      const pwd =
         document.getElementById('deletePassword').value;
-
-      if (!password) {
+      if (!pwd) {
         Swal.showValidationMessage('กรุณากรอกรหัส');
         return false;
       }
+
+      const password = hashPassword(pwd);
 
       if (password !== correctPassword) {
         Swal.showValidationMessage('รหัสไม่ถูกต้อง');
@@ -805,6 +806,25 @@ async function simulateSheetsDelete(stdId) {
   return result;
 }
 
+//-------------------------------
+function hashPassword(password) {
+
+  const rawHash = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    password
+  );
+
+  const hash = rawHash.map(function(b) {
+
+    const v = (b < 0 ? b + 256 : b)
+      .toString(16);
+
+    return v.padStart(2, '0');
+
+  }).join('');
+
+  return hash;
+}
 
 // ---- DASHBOARD ----
 function renderDashboard() {
