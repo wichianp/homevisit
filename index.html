@@ -714,7 +714,7 @@ async function deleteRecord(idx, stdId) {
     confirmButtonText: 'ลบข้อมูล',
     cancelButtonText: 'ยกเลิก',
 
-    preConfirm: () => {
+    preConfirm: async () => {
 
       const pwd =
         document.getElementById('deletePassword').value;
@@ -723,7 +723,7 @@ async function deleteRecord(idx, stdId) {
         return false;
       }
 
-      const password = hashPassword(pwd);
+      const password = await hashPassword(pwd);
 
       if (password !== correctPassword) {
         Swal.showValidationMessage('รหัสไม่ถูกต้อง');
@@ -807,24 +807,32 @@ async function simulateSheetsDelete(stdId) {
 }
 
 //-------------------------------
-function hashPassword(password) {
+async function hashPassword(password) {
 
-  const rawHash = Utilities.computeDigest(
-    Utilities.DigestAlgorithm.SHA_256,
-    password
+  // แปลงข้อความเป็น Uint8Array
+  const encoder = new TextEncoder();
+
+  const data = encoder.encode(password);
+
+  // SHA-256
+  const hashBuffer = await crypto.subtle.digest(
+    'SHA-256',
+    data
   );
 
-  const hash = rawHash.map(function(b) {
+  // แปลงเป็น array
+  const hashArray = Array.from(
+    new Uint8Array(hashBuffer)
+  );
 
-    const v = (b < 0 ? b + 256 : b)
-      .toString(16);
+  // แปลงเป็น hex
+  const hashHex = hashArray
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
 
-    return v.padStart(2, '0');
-
-  }).join('');
-
-  return hash;
+  return hashHex;
 }
+
 
 // ---- DASHBOARD ----
 function renderDashboard() {
