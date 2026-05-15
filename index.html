@@ -605,6 +605,8 @@ function renderTable() {
     tbody.appendChild(row);
   });
   dataTable = $('#data-table').DataTable({
+    searching: false, // ซ่อนค้นหา
+    lengthChange: false, // ซ่อนแสดงรายการ
     language: {
       url: '',
       search: 'ค้นหา:',
