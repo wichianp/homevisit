@@ -6,7 +6,7 @@
 // ---- CONFIG ----
 // เปลี่ยน SHEET_ID เป็น ID ของ Google Spreadsheet ที่ต้องการ
 // (ดู ID จาก URL: https://docs.google.com/spreadsheets/d/<<SHEET_ID>>/edit)
-const SHEET_ID   = 'xxxxxxxxx';
+const SHEET_ID   = 'xxxxxxxxx';// ใส่ ID จริง
 const SHEET_NAME = 'data';   // ชื่อ sheet tab
 
 // คอลัมน์หัวตาราง (ตรงกับ order ใน appendRow)
