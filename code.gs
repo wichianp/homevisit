@@ -6,7 +6,7 @@
 // ---- CONFIG ----
 // เปลี่ยน SHEET_ID เป็น ID ของ Google Spreadsheet ที่ต้องการ
 // (ดู ID จาก URL: https://docs.google.com/spreadsheets/d/<<SHEET_ID>>/edit)
-const SHEET_ID   = 'YOUR_SPREADSHEET_ID_HERE';
+const SHEET_ID   = 'xxxxxxxxx';
 const SHEET_NAME = 'data';   // ชื่อ sheet tab
 
 // คอลัมน์หัวตาราง (ตรงกับ order ใน appendRow)
@@ -222,8 +222,27 @@ function getDeletePassword() {
 
   return {
         status: 'success',
-        password: password
+        password: hashPassword(password)
       }
+}
+
+function hashPassword(password) {
+
+  const rawHash = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    password
+  );
+
+  const hash = rawHash.map(function(b) {
+
+    const v = (b < 0 ? b + 256 : b)
+      .toString(16);
+
+    return v.padStart(2, '0');
+
+  }).join('');
+
+  return hash;
 }
 
 // ============================================================
