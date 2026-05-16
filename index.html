@@ -675,7 +675,7 @@ function showDetail(idx) {
     <div class="detail-row"><div class="detail-label">เบอร์โทร</div><div class="detail-val">📞 ${r.phone}</div></div>
     <div class="detail-row"><div class="detail-label">ที่อยู่</div><div class="detail-val">${[r.subdistrict, r.district, r.province].filter(Boolean).join(' ') || '-'}</div></div>
     <div class="detail-row"><div class="detail-label">พิกัด GPS</div><div class="detail-val">${r.lat ? `${r.lat}, ${r.lng}` : 'ไม่มีข้อมูล'}</div></div>
-    <div class="detail-row"><div class="detail-label">วันที่บันทึก</div><div class="detail-val">📅 ${r.date}</div></div>
+    <div class="detail-row"><div class="detail-label">วันที่บันทึก</div><div class="detail-val">📅 formatDateThaiShort(${r.date})</div></div>
     <div class="detail-row"><div class="detail-label">บันทึกผล</div><div class="detail-val">${r.note || '-'}</div></div>
     ${r.lat ? `<div style="margin-top:1rem"><a href="https://www.google.com/maps?q=${r.lat},${r.lng}" target="_blank" class="btn btn-primary" style="width:100%;justify-content:center;text-decoration: none;">🚗 นำทางด้วย Google Maps</a></div>` : ''}
   `;
