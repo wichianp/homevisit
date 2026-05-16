@@ -15,3 +15,5 @@
 
 6. ใส่ URL Web App ในไฟล์ HTML (index.html)
    <br/>แก้ const APPS_SCRIPT_URL = 'URL Web App ของคุณ';
+7. อัปโหลดไฟล์ index.html ขึ้นโฮสต์
+   
