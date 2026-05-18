@@ -2,7 +2,7 @@
 1. สร้าง Google Spreadsheet
   <br/>ไปที่ sheets.google.com → สร้างไฟล์ใหม่ → คัดลอก ID จาก URL
 2. เปิด Apps Script
-  <br/>ใน Spreadsheet → เมนู Extensions → Apps Script → วางโค้ดแทนที่ทั้งหมด
+  <br/>ใน Spreadsheet → เมนู Extensions → Apps Script → วางโค้ดแทนที่ทั้งหมด ลงใน Code.gs
 3. แก้ไข Config บรรทัดแรก
   <br/>const SHEET_ID = 'YOUR_SPREADSHEET_ID_HERE'; // ใส่ ID จริง
 4. ทดสอบก่อน Deploy
